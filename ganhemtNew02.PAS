@@ -333,7 +333,7 @@ begin
   alxsub      := 0.0;
   inxsub       := 0.0;
   t_k        := 400.0;     { temperature }
-  bandoffset := 0.;
+  bandoffset := 0.7;
   nmax := 1;
   fixednmax := false;
   fermisurf   := 1.5e3; {mev} {fermi level from the cb at top surface}
