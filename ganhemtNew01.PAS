@@ -1,7 +1,7 @@
 program ganhemtNew01;
 uses dos, crt, graph;
 const
-   zm       = 1020; { total number of pixels }
+   zm       = 1021; { total number of pixels }
    layer    = 3;
    nsubMax  = 15;   { maximum number of subbands considered in this program }
    chrg     = 1.602177; { unit charge }
