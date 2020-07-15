@@ -888,7 +888,7 @@ begin
   cal(x1, y0, rearpin1, fermipin1,iter1);
 {  writeln(x1:10:5, y0:10:5, rearpin1:13:5,fermipin1:13:5);  }
 
-  x2 := x0 - 0.9*(x0-x1)*rearpin0/(rearpin0-rearpin1);
+  x2 := x0 - (x0-x1)*rearpin0/(rearpin0-rearpin1);
   cal(x2, y0, rearpin2, fermipin2,iter1);
 {  writeln(x2:10:5, y0:10:5, rearpin2:13:5,fermipin2:13:5); }
 
