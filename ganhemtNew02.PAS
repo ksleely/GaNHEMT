@@ -6,6 +6,7 @@ const
    nsubmax  = 15;   { maximum number of subbands considered in this program }
    chrg     = 1.602177; { unit charge }
    epsilon0 = 8.85418;
+   minnelec = 1.0e-6;
 type
   varray     = array[0..zm] of real;
   larray     = array[1..layer] of real;
@@ -653,7 +654,7 @@ begin
    density2:=fermi_density(e2);
    e1:=e1+de*(nelec-density1)/(density2-density1);
    density1 := fermi_density (e1);
-  until abs(density1-nelec) < 1e-5;
+  until abs(density1-nelec) < minnelec;
   efermi := e1;
 end;
 
@@ -720,12 +721,12 @@ begin
   vref := v[z2+1];
   for z:=1 to z3 do v[z]:=v[z] - vref;
   dvsq := sqrt(dvsq/z3);
-  if sub_density[nmax] > 1.0e-6 then begin
+  if sub_density[nmax] > minnelec then begin
      if not fixednmax then nmax := nmax+1;
      if nmax > nsubmax then nmax := nsubmax;
   end
   else begin
-    if  sub_density[nmax-1] < 1.0e-6 then nmax := nmax-1;
+    if  sub_density[nmax-1] < minnelec then nmax := nmax-1;
   end;
 
   dispose(vold);
@@ -737,6 +738,7 @@ var a, sf,ne : real;
 begin
   sf := x;
   ne := y;
+  if ne < minnelec then ne:= minnelec;
   initpotential(sf,ne);
   iter := 0;
   a := 0.6;
@@ -878,8 +880,7 @@ begin
   y0 := nelec;
   dx := 0.001;
   dy := nelec/2.0;
-for i := 1 to 5 do
-begin
+repeat
   cal(x0, y0, rearpin0, fermipin0,iter1);
 {  writeln(x0:10:5, y0:10:5, rearpin0:13:5,fermipin0:13:5);  }
   if rearpin0 > 0.0 then x1 := x0 + dx else x1:= x0 - dx;
@@ -905,8 +906,7 @@ begin
   y0 := y2;
   dx := dx/10.0;
   dy := dy/10.0;
- end;
-
+until (abs(rearpin2)<1.0) and (abs(fermipin3)<1.0);
   cal(x0, y0, rearpin0, fermipin0,iter1);
 {  writeln(x0:10:5, y0:10:5, rearpin0:13:5,fermipin0:13:5);  }
   if rearpin0 > 0.0 then x1 := x0 + dx else x1:= x0 - dx;
