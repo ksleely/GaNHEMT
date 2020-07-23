@@ -639,34 +639,47 @@ var
   ffp := v[1] -fermisurf - efermi +vgs;
 end;
 
+
 procedure selfcon_cal;
 var
   schrg, idchrg,iachrg,freechrg,rschrg, dx, dy: real;
-  sf,ne, sf1, ne1, sf2, ne2, ef,
+  sf,ne, sf1, ne1, sf2, ne2, ef, vb,
   frp0, ffp0, frp1,ffp1, frp2, ffp2, frp3, ffp3:real;
   i, z : integer;
+  done : boolean;
 begin
-  sf := 1.0-1.6*(alz[1]-alz[3]);
-  ne := 0.5*abs(pol[3]-pol[1])*sf*1.0e3/chrg;
+  sf := 0.5;
+  done := false;
+  repeat
+     ne := abs(pol[3]-pol[1])*sf*1.0e3/chrg;
+     schrg := -sf*pol[1]+ ne*chrg/1.0e3;
+     vb :=(pol[1]+schrg)/epsi[1]*thick[1] +
+       (pol[2]+schrg)/epsi[2]*thick[2] +
+       (pol[3]+schrg - ne*chrg/1.0e3)/epsi[3]*channelthick;
+     vb := vb*1.0e5 + fermisurf-fermibuffer-vh[1];
+     writeln(sf:9:6,' ', ne:9:6,' ', vb:13);
+     if vb > 1.0e4 then sf := sf - 1.0e-2
+     else if vb < 1.0e3 then sf := sf + 1.0e-2
+     else done := true;
+  until done = true;
   first := true;
   calff(sf,ne,frp0,ffp0, ef);
-  writeln(sf:13,' ', ne:13,'  ',frp0:13,'  ', ffp0:13);
   first := false;
-  dx := 0.005;
-  dy := ne/10.0;
+  dx := sf/1000.0;
+  dy := ne/100.0;
   repeat
-    if frp0  > 0.0 then sf1 := sf + dx else sf1:= sf - dx;
+    sf1:= sf + dx;
     calff(sf1,ne,frp1,ffp1, ef);
-    writeln(sf1:13,' ', ne:13,'  ',frp1:13,'  ', ffp1:13);
     sf2 := sf - (sf-sf1)*frp0/(frp0-frp1);
     calff(sf2,ne,frp2,ffp2, ef);
-    writeln(sf2:13,' ', ne:13,'  ',frp2:13,'  ', ffp2:13);
-    if ffp0 > 0.0 then ne1 := ne + dy else ne1:= ne - dy;
+    writeln('sf:  ',sf:8:6,' ', sf1:9:6,' ', sf2:9:6,'  rear fermi pin: ',
+      frp0:12,' ', frp1:12,' ',frp2:12);
+    ne1 := ne - dy;
     calff(sf2,ne1,frp3,ffp3, ef);
-    writeln(sf2:13,' ', ne1:13,'  ',frp3:13,'  ', ffp3:13);
     ne2 := ne - (ne - ne1)*ffp2/(ffp2-ffp3);
     calff(sf2,ne2,frp0,ffp0, ef);
-    writeln(sf2:13,' ', ne2:13,'  ',frp0:13,'  ', ffp0:13);
+    writeln('ne:  ',ne:9:6,' ', ne1:9:6,' ',ne2:9:6,'  front fermi pin: ',
+    ffp2:12,' ',ffp3:13,' ',ffp0:13);
     dx := dx/10.0;
     dy := dy/10.0;
     sf := sf2;
@@ -691,7 +704,7 @@ begin
   writeln('fermi energy (mev):  ',e_fermi:13);
   writeln(' channel bandgap(mev) :  ', bandgap[3]: 13);
   writeln('nsub  energy[i](mev) sub_density[i](10^12cm-2) ');
- { for i:=0 to nmax do writeln(i:4,' ',energy[i]:8:3,' ',sub_density[i]:13); }
+  for i:=0 to nmax do writeln(i:4,' ',energy[i]:8:3,' ',sub_density[i]:13);
 end;
 
 Procedure Inigraph;
