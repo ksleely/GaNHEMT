@@ -18,7 +18,7 @@ var
   z1,z2,z3, zmax, zmin, zpdop1, zpdop2, zndop1,zndop2 : integer;
   vsub, t_k, kt, vgs, dz, wkb1, wkb2, fact1, fact2:real;
   donorden,acceptorden,ionaden, iondden, e_fermi, xexp, elecden : real;
-  fermisurf,fermibuffer : real;
+  fermisurf,fermibuffer, channelthick : real;
   alz, inz, pol, epsi, bandgap, vh, thick: larray;
   alxsub, inxsub, dvsq, mw, mb, thickbuff : real;
   beac, bedon: real;
@@ -390,7 +390,7 @@ end;
 procedure set_design;
 var
   bandoffset,  al, indi, pdopingst, pdopingend : real;
-  ndopingwidth, pdopingwidth, ndopingst, ndopingend, channelthick : real;
+  ndopingwidth, pdopingwidth, ndopingst, ndopingend : real;
   z, n : integer;
 begin
 {setup parameters}
