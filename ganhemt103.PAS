@@ -376,7 +376,7 @@ begin
   end;
   vref := v[z2+1];
   for z:=z0 to z3 do v[z]:=v[z] - vref;
-  dvsq := sqrt(dvsq/z3);
+  dvsq := sqrt(dvsq/(z3-z0));
   if sub_density[nmax] > minnelec then
   begin
      if not fixednmax then nmax := nmax+1;
@@ -628,7 +628,7 @@ var
     begin
       writeln('V[z3] must be positive.');
       readln;
-      for z:= z2+1 to z3 do v[z] := (z-z0)*dz;
+      for z:= z2+1 to z3 do v[z] := (z-z2)*dz;
     end;
   end;
   okay := false;
